@@ -1,8 +1,9 @@
-const followToggle = require("./follow_toggle.js")
+const FollowToggle = require('./follow_toggle.js');
 
-$(() => { 
-    $('button.follow-toggle').each function(index) {
-        const toggleState = new FollowToggle();
+$(function () {
+    $('button.follow-toggle').each((index, button) =>
+        new FollowToggle(button, {}));
 
-    }
+
 });
+

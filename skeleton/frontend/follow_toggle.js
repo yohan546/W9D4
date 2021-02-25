@@ -1,20 +1,40 @@
-class FollowToggle {
-    constructor($el) {
+const Util = require("./api_util.js")
 
-        this.userId = $el.data("user-id", user-id) 
-        this.followState = $el.data( "initial-follow-state", initial-follow-state)
-        this.$el = $('el')
+class FollowToggle {
+    constructor(el, options) {
+
+        this.userId = this.$el.data("user-id");
+        this.followState = (this.$el.data("initial-follow-state"));
+        this.$el = $(el);
         this.render();
 
+        this.$el.on('click', this.handleClick.bind(this));
 
-        
+    }
+
+    handleClick(event) {
+        event.preventDefault();
+        const toggleState = event => {
+            // const followState = $(this.$el.data("initial-follow-state"))
+            if (this.toggleState === 'Unfollowed') {
+                this.render();
+                this.followState = "Following"
+                Util.followUser(this.userId)
+            }
+            else {
+                this.render();
+                this.followState = "Unfollowed"
+                Util.unFollowUser(this.userId)
+            }
+        }
+
     }
 
     render() {
         switch (this.followState) {
-            case 'Followed' : this.$el.html("Unfollow!");
-            break;
-            case 'Unfollowed' : this.$el.html('Follow!');
+            case 'Followed': this.$el.html("Unfollow!");
+                break;
+            case 'Unfollowed': this.$el.html('Follow!');
         };
 
         // const = toggleRender = event => {

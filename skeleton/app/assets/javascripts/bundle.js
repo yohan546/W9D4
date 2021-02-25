@@ -86,14 +86,113 @@
 /************************************************************************/
 /******/ ({
 
+/***/ "./frontend/api_util.js":
+/*!******************************!*\
+  !*** ./frontend/api_util.js ***!
+  \******************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+const Util = {
+
+    followUser: id => Util.changeFollowStatus(id, 'POST'),
+    unFollowUser: id => Util.changeFollowStatus(id, 'DELETE'),
+
+    changeFollowStatus: (id, method) => (
+        $.ajax({
+            url: `/users/${id}/follow`,
+            dataType: 'JSON',
+            method: method
+        })
+    )
+
+}
+
+/***/ }),
+
+/***/ "./frontend/follow_toggle.js":
+/*!***********************************!*\
+  !*** ./frontend/follow_toggle.js ***!
+  \***********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+const Util = __webpack_require__(/*! ./api_util.js */ "./frontend/api_util.js")
+
+class FollowToggle {
+    constructor(el, options) {
+
+        this.userId = this.$el.data("user-id");
+        this.followState = (this.$el.data("initial-follow-state"));
+        this.$el = $(el);
+        this.render();
+
+        this.$el.on('click', this.handleClick.bind(this));
+
+    }
+
+    handleClick(event) {
+        event.preventDefault();
+        const toggleState = event => {
+            // const followState = $(this.$el.data("initial-follow-state"))
+            if (this.toggleState === 'Unfollowed') {
+                this.render();
+                this.followState = "Following"
+                Util.followUser(this.userId)
+            }
+            else {
+                this.render();
+                this.followState = "Unfollowed"
+                Util.unFollowUser(this.userId)
+            }
+        }
+
+    }
+
+    render() {
+        switch (this.followState) {
+            case 'Followed': this.$el.html("Unfollow!");
+                break;
+            case 'Unfollowed': this.$el.html('Follow!');
+        };
+
+        // const = toggleRender = event => {
+        //     if ("followed") {
+        //         this.$el.html('Unfollow!')
+        //     } else {
+        //         this.$el.html('Follow!')
+        //     };
+        // }
+
+        // this.$el.on("click", )
+    }
+
+
+
+
+}
+
+module_exports = FollowToggle;
+
+/***/ }),
+
 /***/ "./frontend/twitter.js":
 /*!*****************************!*\
   !*** ./frontend/twitter.js ***!
   \*****************************/
 /*! no static exports found */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
 
-throw new Error("Module parse failed: Unexpected token (4:35)\nYou may need an appropriate loader to handle this file type, currently no loaders are configured to process this file. See https://webpack.js.org/concepts#loaders\n| \n| $(() => { \n>     $(\"button.follow-toggle\").each function(index) {\n|         const toggleState = new FollowToggle();\n|         ");
+const FollowToggle = __webpack_require__(/*! ./follow_toggle.js */ "./frontend/follow_toggle.js");
+
+$(function () {
+    $('button.follow-toggle').each((index, button) =>
+        new FollowToggle(button, {}));
+
+
+});
+
+
 
 /***/ })
 
